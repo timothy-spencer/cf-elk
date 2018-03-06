@@ -1,0 +1,10 @@
+---
+applications:
+- name: kibana
+  path: kibana
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.6.19
+  command: ./run_kibana.sh
+  memory: 1024M
+  random-route: true
+  services:
+   - elk-elasticsearch
