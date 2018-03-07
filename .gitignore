@@ -4,3 +4,4 @@ vendor/
 *.droplet
 local.yml
 kibana
+kibana-*.tar.gz

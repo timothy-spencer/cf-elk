@@ -9,4 +9,4 @@ else
 fi
 
 # start the app up
-npm start
+bin/kibana
