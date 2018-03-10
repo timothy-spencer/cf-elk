@@ -15,20 +15,9 @@ else
 fi
 
 if [ -d kibana ] ; then
-	echo kibana seems to be pulled down already.  Leaving alone.
+	echo kibana seems to be checked out already.  Leaving alone.
 else
-	if which shasum >/dev/null ; then
-		SHASUM="shasum"
-	else
-		SHASUM="sha1sum"
-	fi
-	wget -c https://artifacts.elastic.co/downloads/kibana/kibana-"${KIBANA_VERSION}"-linux-x86_64.tar.gz
-	if [ "$(${SHASUM} kibana-${KIBANA_VERSION}-linux-x86_64.tar.gz | awk '{print $1}')" != "4c08284c6b3c8225f8607fd349717cc3b37c1897" ] ; then
-		echo kibana package is corrupted, aborting
-		exit 2
-	fi
-	tar zxpf kibana-"${KIBANA_VERSION}"-linux-x86_64.tar.gz
-	mv kibana-"${KIBANA_VERSION}"-linux-x86_64 kibana
+	git clone -b "v${KIBANA_VERSION}" --single-branch --depth 1 https://github.com/elastic/kibana.git
 fi
 
 cp run_kibana.sh package.json kibana/

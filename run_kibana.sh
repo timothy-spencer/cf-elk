@@ -9,4 +9,7 @@ else
 fi
 
 # start the app up
-bin/kibana
+./bin/kibana
+
+# XXX catch it if it doesn't work
+node server.js
