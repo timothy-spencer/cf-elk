@@ -14,6 +14,8 @@ else
 	echo "logging.verbose: true" >> config/kibana.yml
 	echo "elasticsearch.username: \"${ES_USER}\"" >> config/kibana.yml
 	echo "elasticsearch.password: \"${ES_PW}\"" >> config/kibana.yml
+
+	echo "kibana credentials: ${ES_USER} ${ES_PW}"
 fi
 
 # start the app up.  It runs on port 9000, and takes a long time to start up.
