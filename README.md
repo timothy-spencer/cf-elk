@@ -10,10 +10,10 @@ For [cloud.gov](https://cloud.gov), follow the [quickstart guide](https://cloud.
 1. Log into your Cloud Foundry account. (For example, if you use cloud.gov, follow [the "Set up the command line" instructions](https://cloud.gov/docs/getting-started/setup/#set-up-the-command-line) to log in.)
 1. Clone or download this repository, and `cd` into the directory `cf-elk`.
 1. run the deploy script with `./deploy.sh`.  It should:
-    2. Create an elasticsearch service for you.
     2. Clone the kibana repo with a specific version that we tested out.
     2. Copy in config that updates the node version to the latest (as of this writing) version that is compatible with kibana.
-    2. Copies in a special startup script that we use to configure kibana at runtime to use the ES service we created above.
+    2. Copies in a special startup script that we use to configure kibana at runtime to use the ES service we created above and start up a basic proxy to let you use kibana.
+    2. Create an elasticsearch service for you.
     2. Deploys the app with `cf push`
 1. Look for `urls` value when the push completes.
     ```bash{9}

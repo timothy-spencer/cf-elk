@@ -26,6 +26,10 @@ if cf services | grep ^elk-elasticsearch >/dev/null ; then
 	echo elk-elasticsearch seems to be set up already, leaving alone
 else
 	cf create-service elasticsearch56 medium elk-elasticsearch
+	until cf services | grep 'elk-elasticsearch.*create succeeded' >/dev/null ; do
+		echo sleeping until elasticsearch service is provisioned...
+		sleep 5
+	done
 fi
 
 cf push
