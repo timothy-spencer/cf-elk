@@ -20,7 +20,7 @@ else
 	git clone -b "v${KIBANA_VERSION}" --single-branch --depth 1 https://github.com/elastic/kibana.git
 fi
 
-cp run_kibana.sh package.json kibana/
+cp run_kibana.sh server.js package.json kibana/
 
 if cf services | grep ^elk-elasticsearch >/dev/null ; then
 	echo elk-elasticsearch seems to be set up already, leaving alone

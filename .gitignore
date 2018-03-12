@@ -3,5 +3,6 @@
 vendor/
 *.droplet
 local.yml
+node_modules
 kibana
 kibana-*.tar.gz
