@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ES_URI=$(echo "${VCAP_SERVICES}" | jq -r .elasticsearch56[0].credentials.uri)
-ES_URL=$(echo "${ES_URI}" | sed 's/\/\/.*@/\/\//')
-ES_USER=$(echo "${ES_URI}" | sed 's/.*\/\/\(.*\):.*@.*/\1/')
-ES_PW=$(echo "${ES_URI}" | sed 's/.*\/\/.*:\(.*\)@.*/\1/')
+export ES_URI=$(echo "${VCAP_SERVICES}" | jq -r .elasticsearch56[0].credentials.uri)
+export ES_URL=$(echo "${ES_URI}" | sed 's/\/\/.*@/\/\//')
+export ES_USER=$(echo "${ES_URI}" | sed 's/.*\/\/\(.*\):.*@.*/\1/')
+export ES_PW=$(echo "${ES_URI}" | sed 's/.*\/\/.*:\(.*\)@.*/\1/')
 
 if grep ^elasticsearch.url config/kibana.yml >/dev/null ; then
 	echo kibana.yml is already configured
