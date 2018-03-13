@@ -12,28 +12,17 @@ For [cloud.gov](https://cloud.gov), follow the [quickstart guide](https://cloud.
 1. run the deploy script with `./deploy.sh`.  It should:
     2. Clone the kibana repo with a specific version that we tested out.
     2. Copy in config that updates the node version to the latest (as of this writing) version that is compatible with kibana.
-    2. Copies in a special startup script that we use to configure kibana at runtime to use the ES service we created above and
-       start up a basic proxy to let you use kibana.  Kibana is very slow to start up, so we need this proxy to answer sooner than
-       than kibana does.
+    2. Copies in a special startup script that we use to configure kibana at runtime to use the ES service we created above.
     2. Create an elasticsearch service for you.
-    2. Deploys the app with `cf push`
-1. Look for `urls` value when the push completes.
-    ```bash{9}
-    cf push 
-    ...
-    Creating app APP in org / space
-    OK
-    ...[snip]...
-    requested state: started
-    instances: 1/1
-    usage: 1024M x 1 instances
-    urls: kibana-random-words.app.cloud.gov
-    last uploaded: Fri Nov 3 17:50:30 UTC 2017
-    stack: cflinuxfs2
-    ```
-1. Get the username/password that you will need to use to log into kibana with `cf logs kibana --recent | grep 'kibana credentials'`
-1. Load some data into ELK with `XXX`, or start sending logs to ELK with filebeat/logstash by using `XXX`
-1. Visit Kibana with your browser at the URL assigned to your app. In the example above, that would be: e.g. https://php-random-words.app.cloud.gov
+    2. Deploys kibana with `cf push`
+    2. Configures and launches the elk-logstash docker instance
+    2. Sets up the internal service that can be used to drain logs into.
+    2. Loads some sample data into ES.  This may take a while.
+1. Get the username/password that you will need to use to log into kibana with `cf logs elk-kibana --recent | grep 'kibana credentials'`
+1. You may need to wait a bit here for kibana to fully launch.
+1. Visit Kibana with your browser at the URL assigned to your app, which is something like: https://elk-kibana-random-words.app.cloud.gov
+1. You may now set a default index (probably @timestamp) and start searching!  Be aware that the data is kind of old, so you might need to set the search scope to be the last 5 years rather than the last 15 minutes.
+1. In addition, you might want to set up a log drain to the new logstash service using XXX to get new logs in.
 
 
 ## See also

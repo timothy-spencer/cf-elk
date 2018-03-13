@@ -1,4 +1,4 @@
-#!/bin/bash -xeu
+#!/bin/bash -eu
 # 
 # This script will try to configure/deploy Kibana into cloud.gov
 
@@ -38,10 +38,6 @@ export ES_URI=$(cf env elk-kibana | grep '    "uri' | sed 's/.*\(http.*\)".*/\1/
 export ES_URL=$(echo "${ES_URI}" | sed 's/\/\/.*@/\/\//')
 export ES_USER=$(echo "${ES_URI}" | sed 's/.*\/\/\(.*\):.*@.*/\1/')
 export ES_PW=$(echo "${ES_URI}" | sed 's/.*\/\/.*:\(.*\)@.*/\1/')
-echo "##########################################"
-echo "Kibana username: ${ES_USER}"
-echo "Kibana password: ${ES_PW}"
-echo "##########################################"
 
 
 ############################################
@@ -62,5 +58,90 @@ EOF
 )"
 cf push -f logstash-manifest.yml -o docker.elastic.co/logstash/logstash:5.6.8
 
+## set logstash service up for our space to drain logs into
 # cf create-user-provided-service XXX
 # cf bind-service XXX
+
+
+# load some data into logstash
+cf ssh elk-logstash -c 'curl -o shakespeare_6.0.json https://download.elastic.co/demos/kibana/gettingstarted/shakespeare_6.0.json'
+cf ssh elk-logstash -c 'curl -o logs.jsonl.gz https://download.elastic.co/demos/kibana/gettingstarted/logs.jsonl.gz'
+cf ssh elk-logstash -c "curl -XPUT '${ES_URI}/shakespeare?pretty' -H 'Content-Type: application/json' -d'
+{
+ \"mappings\": {
+  \"doc\": {
+   \"properties\": {
+    \"speaker\": {\"type\": \"keyword\"},
+    \"play_name\": {\"type\": \"keyword\"},
+    \"line_id\": {\"type\": \"integer\"},
+    \"speech_number\": {\"type\": \"integer\"}
+   }
+  }
+ }
+}
+'"
+cf ssh elk-logstash -c "curl -XPUT '${ES_URI}/logstash-2015.05.18?pretty' -H 'Content-Type: application/json' -d'
+{
+  \"mappings\": {
+    \"log\": {
+      \"properties\": {
+        \"geo\": {
+          \"properties\": {
+            \"coordinates\": {
+              \"type\": \"geo_point\"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+'"
+cf ssh elk-logstash -c "curl -XPUT '${ES_URI}/logstash-2015.05.19?pretty' -H 'Content-Type: application/json' -d'
+{
+  \"mappings\": {
+    \"log\": {
+      \"properties\": {
+        \"geo\": {
+          \"properties\": {
+            \"coordinates\": {
+              \"type\": \"geo_point\"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+'"
+cf ssh elk-logstash -c "curl -XPUT '${ES_URI}/logstash-2015.05.20?pretty' -H 'Content-Type: application/json' -d'
+{
+  \"mappings\": {
+    \"log\": {
+      \"properties\": {
+        \"geo\": {
+          \"properties\": {
+            \"coordinates\": {
+              \"type\": \"geo_point\"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+'"
+cf ssh elk-logstash -c 'gunzip logs.jsonl.gz'
+cf ssh elk-logstash -c 'mkdir shakespearetmp ; cd shakespearetmp ; split -l 100 ../shakespeare_6.0.json'
+cf ssh elk-logstash -c 'mkdir logstmp ; cd logstmp ; split -l 100 ../logs.jsonl'
+cf ssh elk-logstash -c "cd shakespearetmp ; for i in * ; do curl -H 'Content-Type: application/x-ndjson' -XPOST '${ES_URI}/shakespeare/doc/_bulk?pretty' --data-binary @\$i ; done"
+cf ssh elk-logstash -c "cd logstmp ; for i in * ; do curl -H 'Content-Type: application/x-ndjson' -XPOST '${ES_URI}/_bulk?pretty' --data-binary @\$i ; done"
+
+
+# let folks know how to get in:
+KIBANA_URL=$(cf apps | grep elk-kibana | awk '{print $6}')
+echo "##########################################"
+echo "Kibana username: ${ES_USER}"
+echo "Kibana password: ${ES_PW}"
+echo "Kibana URL: ${KIBANA_URL}"
+echo "##########################################"
