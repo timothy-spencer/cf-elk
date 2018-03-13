@@ -43,7 +43,7 @@ export ES_PW=$(echo "${ES_URI}" | sed 's/.*\/\/.*:\(.*\)@.*/\1/')
 ############################################
 # Start up logstash here
 
-cf push -f logstash-manifest.yml --no-start -o docker.elastic.co/logstash/logstash:5.6.8
+cf push -f logstash-manifest.yml --no-start -o docker.elastic.co/logstash/logstash:"${LOGSTASH_VERSION}"
 cf set-env elk-logstash XPACK.MONITORING.ENABLED false
 cf set-env elk-logstash XPACK.SECURITY.ENABLED false
 cf set-env elk-logstash CONFIG_STRING "$(cat <<EOF
@@ -56,7 +56,7 @@ output {
 }
 EOF
 )"
-cf push -f logstash-manifest.yml -o docker.elastic.co/logstash/logstash:5.6.8
+cf push -f logstash-manifest.yml -o docker.elastic.co/logstash/logstash:"${LOGSTASH_VERSION}"
 
 ## set logstash service up for our space to drain logs into
 # cf create-user-provided-service XXX
