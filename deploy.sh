@@ -33,7 +33,7 @@ else
 	done
 fi
 
-# cf push -f kibana-manifest.yml
+cf push -f kibana-manifest.yml
 export ES_URI=$(cf env elk-kibana | grep '    "uri' | sed 's/.*\(http.*\)".*/\1/')
 export ES_URL=$(echo "${ES_URI}" | sed 's/\/\/.*@/\/\//')
 export ES_USER=$(echo "${ES_URI}" | sed 's/.*\/\/\(.*\):.*@.*/\1/')

@@ -14,6 +14,7 @@ else
 	echo "logging.verbose: true" >> config/kibana.yml
 	echo "elasticsearch.username: \"${ES_USER}\"" >> config/kibana.yml
 	echo "elasticsearch.password: \"${ES_PW}\"" >> config/kibana.yml
+	echo "server.host: \"0.0.0.0\"" >> config/kibana.yml
 
 	echo "kibana credentials: ${ES_USER} ${ES_PW}"
 fi
