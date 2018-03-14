@@ -18,9 +18,8 @@ For [cloud.gov](https://cloud.gov), follow the [quickstart guide](https://cloud.
     2. Configures and launches the elk-logstash docker instance
     2. Sets up the internal service that can be used to drain logs into.
     2. Loads some sample data into ES.  This may take a while.
-1. Get the username/password that you will need to use to log into kibana with `cf logs elk-kibana --recent | grep 'kibana credentials'`
-1. You may need to wait a bit here for kibana to fully launch.
-1. Visit Kibana with your browser at the URL assigned to your app, which is something like: https://elk-kibana-random-words.app.cloud.gov
+1. Get the username/password/URL that you will need to use to log into kibana from the end of the output of the script.
+1. Go to the URL.  You may need to wait a bit here for kibana to fully launch.
 1. You may now set a default index (probably @timestamp) and start searching!  Be aware that the data is kind of old, so you might need to set the search scope to be the last 5 years rather than the last 15 minutes.
 1. In addition, you might want to set up a log drain to the new logstash service using XXX to get new logs in.
 
