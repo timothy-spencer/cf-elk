@@ -21,8 +21,12 @@ For [cloud.gov](https://cloud.gov), follow the [quickstart guide](https://cloud.
 1. Get the username/password/URL that you will need to use to log into kibana from the end of the output of the script.
 1. Go to the URL.  You may need to wait a bit here for kibana to fully launch.
 1. You may now set a default index (probably @timestamp) and start searching!  Be aware that the data is kind of old, so you might need to set the search scope to be the last 5 years rather than the last 15 minutes.
-1. In addition, you might want to set up a log drain to the new logstash service using XXX to get new logs in.
-
+1. There is a logstash instance living on the `elk-logstash` app URL.  You should be able to configure filebeat to send logs to it like so:
+```
+output.logstash:
+  hosts: ["elk-logstash-<whatever>.app.cloud.gov:443"]
+  ssl: true
+```
 
 ## See also
 
